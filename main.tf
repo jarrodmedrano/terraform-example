@@ -96,12 +96,12 @@ resource "aws_default_security_group" "default_sec_group" {
 }
 
 resource "aws_instance" "my_vm" {
-  ami                         = "ami-00baaa26c63140022"
+  ami                         = "ami-092b51d9008adea15"
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.web.id
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
   associate_public_ip_address = true
-  key_name                    = "production_ssh_key"
+  key_name                    = "terraform_ssh_key"
 
   tags = {
     "Name" = "My EC2 Instance - Amazon Linux 2"
