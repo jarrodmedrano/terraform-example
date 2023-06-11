@@ -39,3 +39,71 @@ resource "aws_subnet" "web" {
     "Name" = "Web Subnet"
   }
 }
+
+resource "aws_internet_gateway" "my_web_igw" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    "Name" = "${var.main_vpc_name} IGW"
+  }
+}
+
+resource "aws_default_route_table" "main_vpc_default_rt" {
+  default_route_table_id = aws_vpc.main.default_route_table_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    // all routes not explicitly known by the VPC will go through the internet gateway
+    gateway_id = aws_internet_gateway.my_web_igw.id
+    // gateway id that will handle the traffic ^ points to the internet gateway
+  }
+  tags = {
+    "Name" = "my-default-rt"
+  }
+}
+
+resource "aws_default_security_group" "default_sec_group" {
+  vpc_id = aws_vpc.main.id
+  //permit incoming traffic to ssh and http
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+    // allows any ip address
+    # cidr_blocks = [var.my_public_ip]
+    // allows only my ip address
+  }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    // allow all outbound traffic
+    from_port = 0
+    to_port   = 0
+    protocol  = "-1"
+    // any protocol
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    "Name" = "my-default-sg"
+  }
+}
+
+resource "aws_instance" "my_vm" {
+  ami                         = "ami-00baaa26c63140022"
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_subnet.web.id
+  vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
+  associate_public_ip_address = true
+  key_name                    = "production_ssh_key"
+
+  tags = {
+    "Name" = "My EC2 Instance - Amazon Linux 2"
+  }
+}

@@ -21,3 +21,21 @@ variable "web_subnet" {
   type        = string
   default     = "10.0.10.0/24"
 }
+
+variable "subnet_zone" {
+  description = "Subnet Zone"
+  type        = string
+  default     = "us-east-2a"
+}
+
+variable "main_vpc_name" {
+  description = "Main VPC Name"
+  type        = string
+  default     = "Main VPC"
+}
+
+variable "my_public_ip" {
+  description = "My Public IP"
+  type        = string
+  default     = "162.229.210.89"
+}
