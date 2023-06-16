@@ -14,6 +14,21 @@ provider "aws" {
   secret_key = var.TF_VAR_AWS_SECRET_ACCESS_KEY
 }
 
+data "aws_ami" "latest_amazon_linux2" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-kernel-*-x86_64-gp2"]
+  }
+
+  filter {
+    name   = "architecture"
+    values = ["x86_64"]
+  }
+}
+
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
 
@@ -102,7 +117,7 @@ resource "aws_key_pair" "terraform_ssh_key" {
 }
 
 resource "aws_instance" "my_vm" {
-  ami                         = "ami-092b51d9008adea15"
+  ami                         = data.aws_ami.latest_amazon_linux2.id
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.web.id
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
