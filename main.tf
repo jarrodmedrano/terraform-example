@@ -96,10 +96,10 @@ resource "aws_default_security_group" "default_sec_group" {
 }
 
 // create ssh keypair for ec2 instance
-# resource "aws_key_pair" "terraform_ssh_key" {
-#   key_name   = "terraform_ssh_key"
-#   public_key = file("~/.ssh/aws/terraform_ssh_key.pem")
-# }
+resource "aws_key_pair" "terraform_ssh_key" {
+  key_name   = "terraform_key_rsa"
+  public_key = file("~/.ssh/aws/terraform_key_rsa.pub")
+}
 
 resource "aws_instance" "my_vm" {
   ami                         = "ami-092b51d9008adea15"
@@ -107,7 +107,8 @@ resource "aws_instance" "my_vm" {
   subnet_id                   = aws_subnet.web.id
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
   associate_public_ip_address = true
-  key_name                    = "terraform_ssh_key"
+  # key_name                    = "terraform_key_rsa.pub"
+  key_name = aws_key_pair.terraform_ssh_key.key_name
 
   tags = {
     "Name" = "My EC2 Instance - Amazon Linux 2"
