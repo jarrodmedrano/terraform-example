@@ -95,6 +95,12 @@ resource "aws_default_security_group" "default_sec_group" {
   }
 }
 
+// create ssh keypair for ec2 instance
+# resource "aws_key_pair" "terraform_ssh_key" {
+#   key_name   = "terraform_ssh_key"
+#   public_key = file("~/.ssh/aws/terraform_ssh_key.pem")
+# }
+
 resource "aws_instance" "my_vm" {
   ami                         = "ami-092b51d9008adea15"
   instance_type               = "t2.micro"
