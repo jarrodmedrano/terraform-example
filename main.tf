@@ -96,6 +96,13 @@ resource "aws_default_security_group" "default_sec_group" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   egress {
     // allow all outbound traffic
     from_port = 0
@@ -123,7 +130,8 @@ resource "aws_instance" "my_vm" {
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
   associate_public_ip_address = true
   # key_name                    = "terraform_key_rsa.pub"
-  key_name = aws_key_pair.terraform_ssh_key.key_name
+  key_name  = aws_key_pair.terraform_ssh_key.key_name
+  user_data = file("entry_script.sh")
 
   tags = {
     "Name" = "My EC2 Instance - Amazon Linux 2"
