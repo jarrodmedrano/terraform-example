@@ -123,6 +123,13 @@ resource "aws_key_pair" "terraform_ssh_key" {
   public_key = file("~/.ssh/aws/terraform_key_rsa.pub")
 }
 
+data "template_file" "user_data" {
+  template = file("./web-app-template.yml")
+  vars = {
+    MY_SSH_KEY = "${aws_key_pair.terraform_ssh_key.key_name}"
+  }
+}
+
 resource "aws_instance" "my_vm" {
   ami                         = data.aws_ami.latest_amazon_linux2.id
   instance_type               = "t2.micro"
@@ -130,8 +137,9 @@ resource "aws_instance" "my_vm" {
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
   associate_public_ip_address = true
   # key_name                    = "terraform_key_rsa.pub"
-  key_name  = aws_key_pair.terraform_ssh_key.key_name
-  user_data = file("entry_script.sh")
+  key_name = aws_key_pair.terraform_ssh_key.key_name
+  # user_data = file("entry_script.sh")
+  user_data = data.template_file.user_data.rendered
 
   tags = {
     "Name" = "My EC2 Instance - Amazon Linux 2"
