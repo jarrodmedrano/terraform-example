@@ -45,3 +45,16 @@ variable "ssh_public_key" {
   type        = string
   default     = "ssh-rsa AAAAB3Nz"
 }
+
+variable "azs" {
+  description = "AZs in the region"
+  type        = list(string)
+  default     = ["us-east-2a", "us-east-2b", "us-east-2c"]
+}
+
+variable "amis" {
+  type = map(string)
+  default = {
+    "us-east-2" = "ami-06633e38eb0915f51"
+  }
+}
