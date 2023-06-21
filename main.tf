@@ -80,11 +80,22 @@ resource "aws_default_route_table" "main_vpc_default_rt" {
 resource "aws_default_security_group" "default_sec_group" {
   vpc_id = aws_vpc.main.id
 
+  # dynamic "ingress" {
+  #   for_each = var.ingress_ports
+  #   content {
+  #     from_port   = ingress.value
+  #     to_port     = ingress.value
+  #     protocol    = "tcp"
+  #     cidr_blocks = ["0.0.0.0/0"]
+  #   }
+  # }
+
   dynamic "ingress" {
     for_each = var.ingress_ports
+    iterator = iport
     content {
-      from_port   = ingress.value
-      to_port     = ingress.value
+      from_port   = iport.value
+      to_port     = iport.value
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
     }
