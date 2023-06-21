@@ -131,8 +131,8 @@ data "template_file" "user_data" {
 }
 
 resource "aws_instance" "my_vm" {
-  ami                         = data.aws_ami.latest_amazon_linux2.id
-  instance_type               = var.my_instance[0]
+  ami           = data.aws_ami.latest_amazon_linux2.id
+  instance_type = var.my_instance[0]
   // cpu not supported in t2 micro
   # cpu_core_count              = var.my_instance[1]
   associate_public_ip_address = var.my_instance[2]
@@ -147,3 +147,25 @@ resource "aws_instance" "my_vm" {
     "Name" = "My EC2 Instance - Amazon Linux 2"
   }
 }
+
+# resource "aws_iam_user" "test" {
+#   name = "x-user"
+#   path = "/system/"
+# }
+
+# variable "users" {
+#   type    = list(string)
+#   default = ["demo-user", "admin1", "john"]
+# }
+
+# resource "aws_iam_user" "test" {
+#   count = length(var.users)
+#   name  = element(var.users, count.index)
+#   path  = "/system/"
+# }
+
+# resource "aws_iam_user" "test" {
+#   name = "x-user${count.index}}"
+#   path = "/system/"
+#   count = 3
+# }
