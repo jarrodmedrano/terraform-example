@@ -33,3 +33,9 @@ Will replace this one resource if you apply it.
 
 `terraform apply -replace="aws_instance.my_vm"`
 
+`terraform console`
+opens terraform console
+
+type `local.common-tags`
+to console log the variable
+

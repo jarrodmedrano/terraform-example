@@ -32,9 +32,7 @@ data "aws_ami" "latest_amazon_linux2" {
 resource "aws_vpc" "main" {
   cidr_block = var.vpc_cidr_block
 
-  tags = {
-    "Name" = "Main VPC"
-  }
+  tags = local.common-tags
 }
 
 resource "aws_instance" "server" {
@@ -42,7 +40,8 @@ resource "aws_instance" "server" {
   instance_type = "t2.micro"
 
   tags = {
-    "Name" = "Server"
+    "Name"    = "${local.common-tags["Name"]}-server"
+    "Version" = "${local.common-tags["Version"]}"
   }
 }
 
@@ -50,9 +49,7 @@ resource "aws_subnet" "web" {
   vpc_id            = aws_vpc.main.id
   cidr_block        = var.web_subnet
   availability_zone = var.azs[0]
-  tags = {
-    "Name" = "Web Subnet"
-  }
+  tags              = local.common-tags
 }
 
 resource "aws_internet_gateway" "my_web_igw" {
