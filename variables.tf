@@ -46,6 +46,12 @@ variable "ssh_public_key" {
   default     = "ssh-rsa AAAAB3Nz"
 }
 
+variable "aws_region" {
+  description = "AWS Region"
+  type        = string
+  default     = "us-east-2"
+}
+
 variable "azs" {
   description = "AZs in the region"
   type        = list(string)
@@ -56,5 +62,31 @@ variable "amis" {
   type = map(string)
   default = {
     "us-east-2" = "ami-06633e38eb0915f51"
+  }
+}
+
+variable "my_instance" {
+  description = "My Instance"
+  type        = tuple([string, number, bool])
+  default     = ["t2.micro", 1, true]
+}
+
+variable "egress_dsg" {
+  type = object({
+    // allow all outbound traffic
+    from_port = number
+    to_port   = number
+    protocol  = string
+    // any protocol
+    cidr_blocks = list(string)
+  })
+  default = {
+    // allow all outbound traffic
+    from_port = 0,
+    //max avail port
+    to_port  = 0,
+    protocol = "-1",
+    // any protocol
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }

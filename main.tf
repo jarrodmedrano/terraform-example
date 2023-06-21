@@ -38,7 +38,7 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_instance" "server" {
-  ami           = "ami-06633e38eb0915f51"
+  ami           = var.amis[var.aws_region]
   instance_type = "t2.micro"
 
   tags = {
@@ -105,11 +105,11 @@ resource "aws_default_security_group" "default_sec_group" {
 
   egress {
     // allow all outbound traffic
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port = var.egress_dsg["from_port"]
+    to_port   = var.egress_dsg["to_port"]
+    protocol  = var.egress_dsg["protocol"]
     // any protocol
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = var.egress_dsg["cidr_blocks"]
   }
 
   tags = {
@@ -132,10 +132,12 @@ data "template_file" "user_data" {
 
 resource "aws_instance" "my_vm" {
   ami                         = data.aws_ami.latest_amazon_linux2.id
-  instance_type               = "t2.micro"
+  instance_type               = var.my_instance[0]
+  // cpu not supported in t2 micro
+  # cpu_core_count              = var.my_instance[1]
+  associate_public_ip_address = var.my_instance[2]
   subnet_id                   = aws_subnet.web.id
   vpc_security_group_ids      = [aws_default_security_group.default_sec_group.id]
-  associate_public_ip_address = true
   # key_name                    = "terraform_key_rsa.pub"
   key_name = aws_key_pair.terraform_ssh_key.key_name
   # user_data = file("entry_script.sh")
