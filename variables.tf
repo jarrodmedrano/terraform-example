@@ -90,3 +90,17 @@ variable "egress_dsg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+variable "ingress_ports" {
+  description = "values for ingress ports"
+  type        = list(number)
+  default = [
+    22,
+    80,
+    110,
+    143,
+    443,
+    993,
+    8080,
+  443]
+}

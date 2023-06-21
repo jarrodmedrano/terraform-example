@@ -79,28 +79,15 @@ resource "aws_default_route_table" "main_vpc_default_rt" {
 
 resource "aws_default_security_group" "default_sec_group" {
   vpc_id = aws_vpc.main.id
-  //permit incoming traffic to ssh and http
-  ingress {
-    from_port   = 22
-    to_port     = 22
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    // allows any ip address
-    # cidr_blocks = [var.my_public_ip]
-    // allows only my ip address
-  }
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = var.ingress_ports
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
   }
 
   egress {
@@ -148,6 +135,8 @@ resource "aws_instance" "my_vm" {
   }
 }
 
+## Using count to create users
+
 # resource "aws_iam_user" "test" {
 #   name = "x-user"
 #   path = "/system/"
@@ -168,4 +157,16 @@ resource "aws_instance" "my_vm" {
 #   name = "x-user${count.index}}"
 #   path = "/system/"
 #   count = 3
+# }
+
+## Using foreach to create users
+
+# variable "users" {
+#   type    = list(string)
+#   default = ["demo-user", "admin1", "john"]
+# }
+
+# resource "aws_iam_user" "test" {
+#   for_each = toset(var.users)
+#   name     = each.key
 # }
