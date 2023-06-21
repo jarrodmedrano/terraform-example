@@ -36,7 +36,8 @@ resource "aws_vpc" "main" {
 }
 
 resource "aws_instance" "server" {
-  ami           = var.amis[var.aws_region]
+  # ami           = var.amis[var.aws_region]
+  ami           = lookup(var.amis, var.aws_region)
   instance_type = "t2.micro"
 
   tags = {
@@ -119,7 +120,7 @@ resource "aws_key_pair" "terraform_ssh_key" {
 }
 
 data "template_file" "user_data" {
-  template = file("./web-app-template.yml")
+  template = file("${path.root}/web-app-template.yml")
   vars = {
     MY_SSH_KEY = "${aws_key_pair.terraform_ssh_key.key_name}"
   }

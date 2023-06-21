@@ -33,6 +33,8 @@ Will replace this one resource if you apply it.
 
 `terraform apply -replace="aws_instance.my_vm"`
 
+
+`terraform init`
 `terraform console`
 opens terraform console
 
