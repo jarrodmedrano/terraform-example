@@ -181,3 +181,17 @@ resource "aws_instance" "my_vm" {
 #   for_each = toset(var.users)
 #   name     = each.key
 # }
+
+## Ternary expression
+
+# resource "aws_instance" "test-server" {
+#   ami           = "ami-0d8f6eb4f641ef691"
+#   instance_type = "t2.micro"
+#   count         = var.istest ? 1 : 0
+# }
+
+# resource "aws_instance" "prod-server" {
+#   ami           = "ami-0d8f6eb4f641ef691"
+#   instance_type = "t2.large"
+#   count         = !var.istest ? 1 : 0
+# }

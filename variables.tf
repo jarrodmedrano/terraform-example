@@ -104,3 +104,9 @@ variable "ingress_ports" {
     8080,
   443]
 }
+
+variable "istest" {
+  description = "is this a test?"
+  type        = bool
+  default     = true
+}
