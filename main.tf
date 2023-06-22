@@ -8,6 +8,14 @@ terraform {
   }
 }
 
+data "aws_secretsmanager_secret_version" "creds" {
+  secret_id = "tf_access"
+}
+
+locals {
+  access_key = jsondecode(data.aws_secretsmanager_secret_version.creds.secret_string)
+}
+
 provider "aws" {
   region     = "us-east-2"
   access_key = var.TF_VAR_AWS_ACCESS_KEY_ID
