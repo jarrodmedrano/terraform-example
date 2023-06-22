@@ -41,3 +41,10 @@ opens terraform console
 type `local.common-tags`
 to console log the variable
 
+Reconfigure state
+
+`terraform init -reconfigure -backend-config=backend.conf`
+
+Migrating state
+
+`terraform init -migrate-state`
