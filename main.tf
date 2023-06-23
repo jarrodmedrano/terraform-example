@@ -13,6 +13,7 @@ module "my_instance" {
   ami_id        = lookup(var.amis, var.aws_region)
   instance_type = var.my_instance[0]
   servers       = 1
+  key_name      = aws_key_pair.terraform_ssh_key.key_name
 }
 
 # data "aws_secretsmanager_secret_version" "creds" {

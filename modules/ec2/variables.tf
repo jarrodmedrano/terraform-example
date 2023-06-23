@@ -15,3 +15,8 @@ variable "servers" {
     type        = number
     default     = 1
 }
+
+variable "key_name" {
+    description = "The name of the key"
+    type        = string
+}
