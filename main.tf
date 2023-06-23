@@ -8,13 +8,20 @@ terraform {
   }
 }
 
-data "aws_secretsmanager_secret_version" "creds" {
-  secret_id = "tf_access"
+module "my_instance" {
+  source        = "./modules/ec2"
+  ami_id        = lookup(var.amis, var.aws_region)
+  instance_type = var.my_instance[0]
+  servers       = 1
 }
 
-locals {
-  access_key = jsondecode(data.aws_secretsmanager_secret_version.creds.secret_string)
-}
+# data "aws_secretsmanager_secret_version" "creds" {
+#   secret_id = "tf_access"
+# }
+
+# locals {
+#   access_key = jsondecode(data.aws_secretsmanager_secret_version.creds.secret_string)
+# }
 
 provider "aws" {
   region     = "us-east-2"
@@ -43,16 +50,6 @@ resource "aws_vpc" "main" {
   tags = local.common-tags
 }
 
-resource "aws_instance" "server" {
-  # ami           = var.amis[var.aws_region]
-  ami           = lookup(var.amis, var.aws_region)
-  instance_type = "t2.micro"
-
-  tags = {
-    "Name"    = "${local.common-tags["Name"]}-server"
-    "Version" = "${local.common-tags["Version"]}"
-  }
-}
 
 resource "aws_subnet" "web" {
   vpc_id            = aws_vpc.main.id

@@ -48,3 +48,33 @@ Reconfigure state
 Migrating state
 
 `terraform init -migrate-state`
+
+## adding permissions on the bucket
+
+```{
+    "Version": "2012-10-17",
+    "Id": "Policy1687529715956",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::192147673460:root"
+            },
+            "Action": "s3:ListBucket",
+            "Resource": "arn:aws:s3:::work-tf-remote-state"
+        },
+        {
+            "Sid": "Stmt1687529708427",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::192147673460:root"
+            },
+            "Action": [
+                "s3:DeleteObject",
+                "s3:GetObject",
+                "s3:PutObject"
+            ],
+            "Resource": "arn:aws:s3:::work-tf-remote-state/s3_backend.tfstate"
+        }
+    ]
+}```
