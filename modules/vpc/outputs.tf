@@ -27,3 +27,9 @@ output "ami_id" {
   value       = aws_instance.my_vm.ami
   sensitive   = false
 }
+
+output "Datetime" {
+  description = "The current date and time"
+  value       = local.time
+  sensitive   = false
+}
