@@ -17,9 +17,9 @@ module "my_instance" {
 }
 
 module "vpc" {
-  source   = "./modules/vpc"
-  key_name = aws_key_pair.terraform_ssh_key.key_name
-  aws_ami  = data.aws_ami.latest_amazon_linux2.id
+  source         = "./modules/vpc"
+  key_name       = aws_key_pair.terraform_ssh_key.key_name
+  aws_ami        = data.aws_ami.latest_amazon_linux2.id
   security_group = aws_default_security_group.default_sec_group.id
 }
 
@@ -37,20 +37,6 @@ provider "aws" {
   secret_key = var.TF_VAR_AWS_SECRET_ACCESS_KEY
 }
 
-data "aws_ami" "latest_amazon_linux2" {
-  most_recent = true
-  owners      = ["amazon"]
-
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-kernel-*-x86_64-gp2"]
-  }
-
-  filter {
-    name   = "architecture"
-    values = ["x86_64"]
-  }
-}
 
 
 resource "aws_default_security_group" "default_sec_group" {
